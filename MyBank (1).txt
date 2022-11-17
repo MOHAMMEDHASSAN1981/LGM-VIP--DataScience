@@ -1,0 +1,43 @@
+pragma solidity >= 0.7.0<0.8.0;
+//Solidity is a high-level programming language designed for implementing smart contracts.
+//any compiler between 0.7.0<0.8.0 will compile smart contract smoothly without error.
+contract MyBank
+{
+    mapping(address=> uint ) private _balances;//store balance of each user.
+    address public owner;//use to store owners addr.
+    event LogDepositeMade(address accountHoder, uint amount );
+    //constr is a function that runs only once at the time of deploying the SC.
+    constructor () public
+     {
+         owner=msg.sender;//current user which is interacting with SC.
+         emit LogDepositeMade(msg.sender, 1000);
+     }
+
+        function deposite() public payable  returns (uint)
+        {
+           
+        require ((_balances[msg.sender] + msg.value) >  _balances[msg.sender] && msg.sender!=address(0));
+        _balances[msg.sender] += msg.value;//msg.value=amount that is depositing in SC.
+        emit LogDepositeMade(msg.sender , msg.value);
+        return _balances[msg.sender];
+        } 
+
+        function withdraw (uint withdrawAmount) public  returns (uint)
+        {
+           //to withdraw funds.
+                require (_balances[msg.sender] >= withdrawAmount);
+                require(msg.sender!=address(0));
+                require (_balances[msg.sender] > 0);
+                _balances[msg.sender]-= withdrawAmount;
+                msg.sender.transfer(withdrawAmount);
+                emit LogDepositeMade(msg.sender , withdrawAmount);
+                return _balances[msg.sender];
+
+        }
+
+        function viewBalance() public view returns (uint)
+        {
+            return _balances[msg.sender];
+        }
+   
+}
